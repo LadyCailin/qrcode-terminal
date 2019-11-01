@@ -1,82 +1,27 @@
-# QRCode Terminal Edition [![Build Status][travis-ci-img]][travis-ci-url]
+# QRCode Java Edition
 
 > Going where no QRCode has gone before.
 
-![Basic Example][basic-example-img]
+Ported from JavaScript to Java, based on the qrcode-terminal npm module
+https://github.com/gtanner/qrcode-terminal
 
-# Node Library
+Can be easily embedded in Java console applications to print
+QR Codes to the terminal. Usage is straightforward.
 
-## Install
+    String out = new QRTerminal().generate("String to encode");
+    System.out.println(out);
 
-Can be installed with:
+On Windows terminals, however, due to interoperability issues with
+terminals, printing to standard out with the large format doesn't
+work. To solve this problem, you need to use jline library. Include
+https://search.maven.org/artifact/jline/jline/2.14.6/jar and simply call
 
-    $ npm install qrcode-terminal
+    org.fusesource.jansi.AnsiConsole.systemInstall();
 
-and used:
+before displaying the QR code to the terminal. Alternatively, you
+may obtain the 2D boolean array and display it however you like.
 
-    var qrcode = require('qrcode-terminal');
-
-## Usage
-
-To display some data to the terminal just call:
-
-    qrcode.generate('This will be a QRCode, eh!');
-
-You can even specify the error level (default is 'L'):
-    
-    qrcode.setErrorLevel('Q');
-    qrcode.generate('This will be a QRCode with error level Q!');
-
-If you don't want to display to the terminal but just want to string you can provide a callback:
-
-    qrcode.generate('http://github.com', function (qrcode) {
-        console.log(qrcode);
-    });
-
-If you want to display small output, provide `opts` with `small`:
-
-    qrcode.generate('This will be a small QRCode, eh!', {small: true});
-
-    qrcode.generate('This will be a small QRCode, eh!', {small: true}, function (qrcode) {
-        console.log(qrcode)
-    });
-
-# Command-Line
-
-## Install
-
-    $ npm install -g qrcode-terminal
-
-## Usage
-
-    $ qrcode-terminal --help
-    $ qrcode-terminal 'http://github.com'
-    $ echo 'http://github.com' | qrcode-terminal
-
-# Support
-
-- OS X
-- Linux
-- Windows
-
-# Server-side
-
-[node-qrcode][node-qrcode-url] is a popular server-side QRCode generator that
-renders to a `canvas` object.
-
-# Developing
-
-To setup the development envrionment run `npm install`
-
-To run tests run `npm test`
-
-# Contributers
-
-    Gord Tanner <gtanner@gmail.com>
-    Micheal Brooks <michael@michaelbrooks.ca>
-
-[travis-ci-img]: https://travis-ci.org/gtanner/qrcode-terminal.png
-[travis-ci-url]: https://travis-ci.org/gtanner/qrcode-terminal
-[basic-example-img]: https://raw.github.com/gtanner/qrcode-terminal/master/example/basic.png
-[node-qrcode-url]: https://github.com/soldair/node-qrcode
-
+    QRCode qrcode = new QRCode(-1, QRErrorCorrectLevel.L);
+    qrcode.addData(input); // String to encode
+    qrcode.make();
+    Boolean[][] modules = qrcode.getModules();
